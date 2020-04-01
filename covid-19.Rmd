@@ -67,7 +67,7 @@ A comparison of WB countries that have >100 confirmed cases with Italy. Please n
 
 ```{r pressure, plotly=TRUE,fig.width=9,fig.height=6, echo=FALSE}
 
-interactive_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% filter(value > 100) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 21) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + scale_y_log10() + theme_clean() + scale_color_brewer(palette = "Set2") + labs(title = "Number of cases of COVID19 in Western Balkans \n since 100th confirmed case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", x = "Days since 100th confirmed case, Italy added for comparison")
+interactive_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% filter(value > 100) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 21) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + scale_y_log10() + theme_clean() + scale_color_brewer(palette = "Paired") + labs(title = "Number of cases of COVID19 in Western Balkans \n since 100th confirmed case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", x = "Days since 100th confirmed case, Italy added for comparison")
 ggplotly(interactive_confirmed_graph)
 ```
 
