@@ -65,15 +65,15 @@ totals_graph <- ggplot(total) + geom_col(aes(x = Country, y = value, fill = name
 
 A comparison of WB countries that have >100 confirmed cases with Italy. Please note that we are using a LOG10 scale, which is the standard for exponential growth, if the slope of the curve starts decreasing it means that the growth rate of the epidemic is decreasing as well, [as explained in this Balkansmedia video](https://www.youtube.com/watch?v=nHoJ_hICzyM&t=2s).
 
-```{r pressure, plotly=TRUE,fig.width=10,fig.height=8, echo=FALSE}
+```{r pressure, plotly=TRUE,fig.width=9,fig.height=6, echo=FALSE}
 
-interactive_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% filter(value > 100) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 21) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + scale_y_log10() + theme_clean() + scale_color_brewer(palette = "Set2") + labs(title = "Number of cases of COVID19 in Western Balkans since 100th confirmed case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", x = "Days since 100th confirmed case, Italy added for comparison")
+interactive_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% filter(value > 100) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 21) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + scale_y_log10() + theme_clean() + scale_color_brewer(palette = "Set2") + labs(title = "Number of cases of COVID19 in Western Balkans \n since 100th confirmed case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", x = "Days since 100th confirmed case, Italy added for comparison")
 ggplotly(interactive_confirmed_graph)
 ```
 
 ## Overall COVID19 State In Western Balkans
 
-```{r interactive-totals, plotly=TRUE,fig.width=10,fig.height=8}
+```{r interactive-totals, plotly=TRUE,fig.width=9, fig.height=6}
 ggplotly(totals_graph)
 ```
 
