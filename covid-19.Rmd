@@ -41,11 +41,7 @@ rolling_daily_it_30 <- time_series_19_covid_Confirmed %>% select(Country  = `Cou
 
 rolling_graph_static <- rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 28) %>% ggplot(aes(days_since_start, avg, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) + scale_color_brewer(palette = "Paired") + labs(title = "Number of daily reported cases of COVID19 in Western Balkans", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1", x = "Days since 100th confirmed case") + scale_y_log10()
 
-<<<<<<< HEAD
 rolling_graph_interactive <- rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 28) %>% ggplot(aes(days_since_start, avg, color = Country)) + geom_line(size = 2) + theme_clean()+ scale_color_brewer(palette = "Paired") + scale_y_log10() + labs(title = "Daily average new cases for past week") + xlab("Days since 10 cases per day were first reported") + ylab("Average cases reported over past 7 days")
-=======
-rolling_graph_interactive <- rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 28) %>% ggplot(aes(days_since_start, avg, color = Country)) + geom_line(size = 2) + theme_clean()+ scale_color_brewer(palette = "Paired") + scale_y_log10() + labs(title = "Daily average new cases for past week")
->>>>>>> 136b3e4d2bda516d979b60d8b9cc05130ee5c227
 
 ```
 
