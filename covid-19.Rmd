@@ -30,7 +30,7 @@ confirmed_it_100$Date <- confirmed_it_100$Date %>% as.Date(format="%m/%d/%y")
 confirmed <- time_series_19_covid_Confirmed %>% select(Country  = `Country/Region`, everything(), -Lat, -Long, -`Province/State`) %>% pivot_longer(-Country, "Date") %>% filter(Country %in% c('Serbia', "Bosnia and Herzegovina", "Croatia", "Slovenia", "North Macedonia", "Kosovo", "Albania", "Montenegro", "Italy")) %>% filter(value > 0)
 confirmed$Date <- confirmed$Date %>% as.Date(format="%m/%d/%y")
 
-overall_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 28) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10)) + scale_color_brewer(palette = "Paired") + labs(title = "Number of cases of COVID19 in Western Balkans \n since 100th reported case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1", x = "Days since 100th confirmed case") + scale_y_log10()
+overall_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 35) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10)) + scale_color_brewer(palette = "Paired") + labs(title = "Number of cases of COVID19 in Western Balkans \n since 100th reported case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1", x = "Days since 100th confirmed case") + scale_y_log10()
 ```
 
 ```{r, include=FALSE}
@@ -39,9 +39,9 @@ rolling_avg <- rollify(mean, window = 7)
 
 rolling_daily_it_30 <- time_series_19_covid_Confirmed %>% select(Country  = `Country/Region`, everything(), -Lat, -Long, -`Province/State`) %>% pivot_longer(-Country, "Date") %>% filter(Country %in% c('Serbia', "Bosnia and Herzegovina", "Croatia", "Slovenia", "North Macedonia", "Kosovo", "Albania", "Montenegro", "Italy"), value > 0) %>% group_by(Country) %>% filter(n() > 7) %>% mutate(Date = as.Date(Date, format="%m/%d/%y"), new_cases = value - dplyr::lag(value, n = 1)) %>% mutate(avg = rolling_avg(new_cases)) %>% filter(ifelse(new_cases >9, TRUE, NA) %>% na.locf(na.rm=FALSE)) %>% filter(!is.na(avg)) %>% ungroup()
 
-rolling_graph_static <- rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 28) %>% ggplot(aes(days_since_start, avg, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) + scale_color_brewer(palette = "Paired") + labs(title = "Average of daily reported cases of COVID19 in Western Balkans", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1, Y axis is average of previous 7 days", x = "Days since 100th confirmed case") + scale_y_log10()
+rolling_graph_static <- rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 35) %>% ggplot(aes(days_since_start, avg, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) + scale_color_brewer(palette = "Paired") + labs(title = "Average of daily reported cases of COVID19 in Western Balkans", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1, Y axis is average of previous 7 days", x = "Days since 100th confirmed case") + scale_y_log10()
 
-rolling_graph_interactive <- rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 28) %>% ggplot(aes(days_since_start, avg, color = Country)) + geom_line(size = 2) + theme_clean()+ scale_color_brewer(palette = "Paired") + scale_y_log10() + labs(title = "Daily average new cases for past week") + xlab("Days since 10 cases per day were first reported") + ylab("Average cases reported over past 7 days")
+rolling_graph_interactive <- rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 35) %>% ggplot(aes(days_since_start, avg, color = Country)) + geom_line(size = 2) + theme_clean()+ scale_color_brewer(palette = "Paired") + scale_y_log10() + labs(title = "Daily average new cases for past week") + xlab("Days since 10 cases per day were first reported") + ylab("Average cases reported over past 7 days")
 
 ```
 
@@ -54,7 +54,7 @@ time_series_19_covid_recovered <- read_csv(url("https://raw.githubusercontent.co
 recovered <- time_series_19_covid_recovered %>% select(Country  = `Country/Region`, everything(), -Lat, -Long, -`Province/State`) %>% pivot_longer(-Country, "Date") %>% filter(Country %in% c('Serbia', "Bosnia and Herzegovina", "Croatia", "Slovenia", "North Macedonia", "Kosovo", "Albania", "Montenegro")) %>% filter(value > 0)
 recovered$Date <- recovered$Date %>% as.Date(format="%m/%d/%y")
 
-recovered_graph <- recovered %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10)) + scale_color_brewer(palette = "Paired") + labs(title = "Number of recoveries from COVID19 in Western Balkans", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1", x = "Days since first recovery")
+recovered_graph <- recovered %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10)) + scale_color_brewer(palette = "Paired") + labs(title = "Number of recoveries from COVID19 in Western Balkans", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1", x = "Days since first recovery") + scale_y_log10()
 
 ```
 
@@ -64,7 +64,7 @@ time_series_19_covid_deaths <- read_csv(url("https://raw.githubusercontent.com/C
 dead <- time_series_19_covid_deaths %>% select(Country  = `Country/Region`, everything(), -Lat, -Long, -`Province/State`) %>% pivot_longer(-Country, "Date") %>% filter(Country %in% c('Serbia', "Bosnia and Herzegovina", "Croatia", "Slovenia", "North Macedonia", "Kosovo", "Albania", "Montenegro")) %>% filter(value > 0)
 dead$Date <- dead$Date %>% as.Date(format="%m/%d/%y")
 
-dead_graph <- dead %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10)) + scale_color_brewer(palette = "Paired") + labs(title = "Number of deaths from COVID19 in Western Balkans", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1", x = "Days since first death")
+dead_graph <- dead %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + theme_wsj() + theme(legend.text = element_text(size = 12), plot.title = element_text(size = 14, hjust = 0.5), plot.subtitle = element_text(size = 10)) + scale_color_brewer(palette = "Paired") + labs(title = "Number of deaths from COVID19 in Western Balkans", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", subtitle = "By: Imer Muhovic @imerm1", x = "Days since first death") + scale_y_log10()
 ```
 
 ```{r totals-plot, include=FALSE}
@@ -74,6 +74,7 @@ totals_recov <- recovered %>%group_by(Country) %>% top_n(1, Date) %>% ungroup() 
 
 total <- left_join(totals_conf, totals_dead) %>% left_join(totals_recov) %>% pivot_longer(c(confirmed, dead, recovered))
 totals_graph <- ggplot(total) + geom_col(aes(x = Country, y = value, fill = name))  + scale_fill_manual(values = c("dead"="#E41A1C", "confirmed"="#377EB8","recovered"= "#4DAF4A")) + theme_clean() + labs(title = "Western Balkans COVID19 current state", fill="") + ylab("") + xlab("") + theme(axis.text.x = element_text(angle=45, hjust = 1))
+
 
 ```
 
@@ -92,7 +93,7 @@ A comparison of WB countries that have >100 confirmed cases with Italy. Please n
 
 ```{r pressure, plotly=TRUE,fig.width=9,fig.height=6, echo=FALSE}
 
-interactive_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% filter(value > 100) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 28) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + scale_y_log10() + theme_clean() + scale_color_brewer(palette = "Paired") + labs(title = "Number of cases of COVID19 in Western Balkans \n since 100th confirmed case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", x = "Days since 100th confirmed case, Italy added for comparison")
+interactive_confirmed_graph <- confirmed_it_100 %>% group_by(Country) %>% filter(value > 100) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 35) %>% ggplot(aes(days_since_start, value, color = Country)) + geom_line(size = 2) + scale_y_log10() + theme_clean() + scale_color_brewer(palette = "Paired") + labs(title = "Number of cases of COVID19 in Western Balkans \n since 100th confirmed case", caption ="Data source:https://github.com/CSSEGISandData/COVID-19/", x = "Days since 100th confirmed case, Italy added for comparison")
 ggplotly(interactive_confirmed_graph)
 ```
 
@@ -113,5 +114,12 @@ totals_graph
 overall_confirmed_graph
 recovered_graph
 dead_graph
+```
+
+```{r write-out, echo=FALSE}
+rolling_daily_it_30 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 35) %>% select(Country, avg, days_since_start) %>% pivot_wider(names_from = Country, values_from = avg) %>% write_csv("rollint_it_30.csv")
+total %>% pivot_wider(names_from=name, values_from = value) %>% mutate(mortality = dead/(recovered+confirmed), recovery_rate = recovered/(confirmed+dead)) %>% write_csv("totals.csv")
+confirmed_it_100 %>% group_by(Country) %>% mutate(days_since_start = difftime(Date, min(Date), units = "days")) %>% filter(days_since_start < 35) %>% select(Country, value, days_since_start) %>% pivot_wider(names_from = Country) %>%  write_csv("confirmed_it_100.csv")
+
 ```
 
